@@ -1,0 +1,30 @@
+backup
+# ServerSender¹é¾÷
+	class ServerSender extends Thread {
+		Socket socket;
+		DataOutputStream out;
+
+		ServerSender(Socket socket) {
+			this.socket = socket;
+			try {
+				out = new DataOutputStream(socket.getOutputStream());
+			} catch (Exception e) {
+			}
+		}
+		
+		public void run() {
+			Scanner scanner = new Scanner(System.in);
+			String message = "";
+			try {
+				if (out != null) {
+					out.writeUTF("");
+				}
+
+				while (out != null) {
+					message = scanner.nextLine();
+					out.writeUTF(message);
+				}
+			} catch (IOException e) {}
+
+		} // run()
+	}
