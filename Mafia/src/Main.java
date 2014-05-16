@@ -14,18 +14,23 @@ public class Main {
 			System.out.println("2. 서버참가");
 			Scanner sc = new Scanner(System.in);
 
+			Server server = new Server();
+			
 			byte sel;
 			sel = sc.nextByte();
 			switch (sel) {
 			case 1:
-				new Server().Start();
+				server.Start();
+				
 				break;
 			case 2:
 				String serverIp = "127.0.0.1";
 				System.out.println("닉네임을 입력하세요.");
 				String id = sc.next();
 
-				new Client().Start(id, serverIp);
+				Client client = new Client();
+				client.Start(id, serverIp);
+				
 				break;
 			}
 		} catch (Exception e) {

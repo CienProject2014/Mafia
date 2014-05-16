@@ -3,16 +3,22 @@ package chat;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import chat.Client;
+import game.Game;
 
 public class Server {
 	HashMap clients;
+	Game game;
 
 	public Server() {
-		clients = new HashMap();
-		Collections.synchronizedMap(clients);
+		// 비었음
 	}
 
 	public void Start() {
+		clients = new HashMap();
+		Collections.synchronizedMap(clients);
+		game = new Game();
+
 		ServerSocket serverSocket = null;
 		Socket socket = null;
 
@@ -26,10 +32,9 @@ public class Server {
 
 			while (true) {
 				socket = serverSocket.accept(); // 클라이언트 연결요청 기다림
-				
+
 				ServerReceiver receiver = new ServerReceiver(socket);
-				
-				// 서버의 쓰레드 시작, 클라이언트마다 쓰레드 하나 만듬.
+
 				receiver.start();
 
 			}
@@ -61,11 +66,18 @@ public class Server {
 			try {
 				while (true) {
 					message = scanner.nextLine();
-					if (message.equals("shutup")) {
-						sendToAll("Everybody Shutup!", "Server");
+					if (message.isEmpty()) { // 아무것도 입력안하고 엔터시 continue
 						continue;
 					}
-					sendToAll(message, "Server");
+					if (message.charAt(0) == '@') { // @로 시작하는 명령어 입력시
+						if (message.equals("@set")) // set->세팅
+							game.Set(clients);
+						else if (message.equals("@start")) // start->시작
+							System.out.println("");// game.Startt;
+						else
+							System.out.println("명령어를 제대로 입력해주세요.");
+					}
+					sendToAll("[*Server*]" + message, "Server");
 				}
 			} catch (Exception e) {
 			}
@@ -76,7 +88,8 @@ public class Server {
 		Socket socket;
 		DataInputStream in;
 		DataOutputStream out;
-		// 클라이언트 정보를 저장하는 변수들; 쓰레드마다 따로 저장되겠지?
+
+		Client client; // 클라이언트 객체 받음
 		String id; // Clients의 key값
 
 		ServerReceiver(Socket socket) {
@@ -88,7 +101,29 @@ public class Server {
 			}
 		}
 
+		public void setClient(Client client) {
+			this.client = client;
+		}
+
 		public void run() {
+			try {
+				Init();
+
+				// -------- 쓰레드가 반복 --------//
+				while (in != null) {
+					String message = in.readUTF(); // 클라이언트가 보낸 메세지
+					sendToAll(message, id); // 받은 메세지를 클라이언트 모두에게 뿌림
+					System.out.println(message); // 서버에서 메세지 확인
+				}
+				// ------------- 끝 -------------//
+			} catch (IOException e) {
+				// ignore
+			} finally {
+				Out();
+			} // try
+		} // run
+
+		void Init() {
 			try {
 				id = in.readUTF();
 				if (clients.containsKey(id)) {
@@ -99,22 +134,27 @@ public class Server {
 					// 이벤트 아직 안만듬
 				}
 
-				sendToAll("#" + id + "님이 들어오셨습니다.", "Server");
-
 				clients.put(id, out);
+
+				sendToAll("#" + id + "님이 들어오셨습니다.", "Server");
 				System.out.println("현재 서버접속자 수는 " + clients.size() + "입니다.");
+
 				while (in != null) {
-					sendToAll(in.readUTF(), id); // 클라이언트id에게 받은 메세지를 뿌림
+					String message = in.readUTF(); // 클라이언트가 보낸 메세지
+					sendToAll(message, id); // 받은 메세지를 클라이언트 모두에게 뿌림
+					System.out.println(message); // 서버에서 메세지 확인
 				}
 			} catch (IOException e) {
 				// ignore
-			} finally {
-				sendToAll("#" + id + "님이 나가셨습니다.", "Server");
-				clients.remove(id);
-				System.out.println("[" + socket.hashCode() + "]"
-						+ "에서 접속을 종료하였습니다.");
-				System.out.println("현재 서버접속자 수는 " + clients.size() + "입니다.");
 			} // try
-		} // run
+		}
+
+		void Out() {
+			sendToAll("#" + id + "님이 나가셨습니다.", "Server");
+			clients.remove(id);
+			System.out.println("[" + socket.hashCode() + "]"
+					+ "에서 접속을 종료하였습니다.");
+			System.out.println("현재 서버접속자 수는 " + clients.size() + "입니다.");
+		}
 	} // ReceiverThread
 } // class

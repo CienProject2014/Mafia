@@ -3,8 +3,19 @@ package chat;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
+import chat.Server;
 
 public class Client {
+	String job = "";
+
+	public String getJob() {
+		return job;
+	}
+
+	public void setJob(String job) {
+		this.job = job;
+	}
+
 	public void Start(String id, String serverIp) {
 		try {
 			// 소켓을 생성하여 연결을 요청한다.
@@ -47,10 +58,11 @@ public class Client {
 				}
 
 				while (out != null) {
-					if ((message = scanner.nextLine()).charAt(0) == '@') {
+					message = scanner.nextLine();
+					if (message.isEmpty()) {// 아무것도 입력안하면 처리해야함
 						continue;
 					}
-					if (chat){
+					if (chat) {
 						out.writeUTF("[" + name + "]" + message);
 					}
 				}
