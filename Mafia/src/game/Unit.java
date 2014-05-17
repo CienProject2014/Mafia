@@ -1,19 +1,19 @@
 package game;
 
 public class Unit {
-	class Mafia {
+	class Mafia extends Person {
 
 	}
 
-	class Citizen {
+	class Citizen extends Person {
 
 	}
 
-	class Police {
+	class Police extends Person {
 
 	}
 
-	class Doctor {
+	class Doctor extends Person {
 
 	}
 }

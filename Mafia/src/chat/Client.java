@@ -6,16 +6,6 @@ import java.util.Scanner;
 import chat.Server;
 
 public class Client {
-	String job = "";
-
-	public String getJob() {
-		return job;
-	}
-
-	public void setJob(String job) {
-		this.job = job;
-	}
-
 	public void Start(String id, String serverIp) {
 		try {
 			// 소켓을 생성하여 연결을 요청한다.
