@@ -53,6 +53,7 @@ public class Server {
 					continue; // 메세지 보낸 본인은 출력 안하게 continue
 				out.writeUTF(msg);
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		} // while
 	} // sendToAll
@@ -80,6 +81,7 @@ public class Server {
 					sendToAll("[*Server*]" + message, "Server");
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		} // run() }
 	}
@@ -98,6 +100,7 @@ public class Server {
 				in = new DataInputStream(socket.getInputStream());
 				out = new DataOutputStream(socket.getOutputStream());
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -117,7 +120,7 @@ public class Server {
 				}
 				// ------------- 끝 -------------//
 			} catch (IOException e) {
-				// ignore
+				e.printStackTrace();
 			} finally {
 				Out();
 			} // try
@@ -145,7 +148,7 @@ public class Server {
 					System.out.println(message); // 서버에서 메세지 확인
 				}
 			} catch (IOException e) {
-				// ignore
+				e.printStackTrace();
 			} // try
 		}
 

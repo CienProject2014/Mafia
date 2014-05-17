@@ -21,6 +21,7 @@ public class Client {
 		} catch (ConnectException ce) {
 			ce.printStackTrace();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -36,6 +37,7 @@ public class Client {
 				out = new DataOutputStream(socket.getOutputStream());
 				this.name = name;
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -57,6 +59,7 @@ public class Client {
 					}
 				}
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		} // run()
 	}
@@ -70,6 +73,7 @@ public class Client {
 			try {
 				in = new DataInputStream(socket.getInputStream());
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -78,6 +82,7 @@ public class Client {
 				try {
 					System.out.println(in.readUTF());
 				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		} // run

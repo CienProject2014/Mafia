@@ -15,6 +15,7 @@ public class Main {
 			Scanner sc = new Scanner(System.in);
 
 			Server server = new Server();
+			// case 2에서 클라이언트에게 서버의 정보를 줄려고 이렇게 했음
 			
 			byte sel;
 			sel = sc.nextByte();
@@ -34,7 +35,7 @@ public class Main {
 				break;
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 
 	}
