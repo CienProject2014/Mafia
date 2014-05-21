@@ -3,7 +3,6 @@ package chat;
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
-import chat.Server;
 
 public class Client {
 	public void Start(String id, String serverIp) {

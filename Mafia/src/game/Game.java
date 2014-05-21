@@ -1,19 +1,18 @@
 package game;
 
-import java.net.*;
+import java.io.DataOutputStream;
 import java.util.*;
-import game.Unit.*;
-import chat.Server;
+
 
 public class Game {
-	HashMap clients;
+	HashMap<String, DataOutputStream> clients;
 	public int Num;
 
 	public Game() {
 		System.out.println("Game 생성자");
 	}
 
-	public void Set(HashMap clients) {
+	public void Set(HashMap<String, DataOutputStream> clients) {
 		this.clients = clients;
 		System.out.println("---------마피아 설정---------");
 		Num = clients.size();

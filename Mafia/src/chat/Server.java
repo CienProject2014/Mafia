@@ -7,7 +7,7 @@ import chat.Client;
 import game.Game;
 
 public class Server {
-	HashMap clients;
+	HashMap<String, DataOutputStream> clients;
 	Game game;
 
 	public Server() {
@@ -15,7 +15,7 @@ public class Server {
 	}
 
 	public void Start() {
-		clients = new HashMap();
+		clients = new HashMap<String, DataOutputStream>();
 		Collections.synchronizedMap(clients);
 		game = new Game();
 
@@ -44,7 +44,7 @@ public class Server {
 	} // start()
 
 	void sendToAll(String msg, String id) {
-		Iterator it = clients.keySet().iterator();
+		Iterator<String> it = clients.keySet().iterator();
 
 		while (it.hasNext()) {
 			try { // 서버에서 클라이언트로 출력하는 부분!
