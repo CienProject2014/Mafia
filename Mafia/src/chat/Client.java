@@ -53,7 +53,12 @@ public class Client {
 					if (message.isEmpty()) {// 아무것도 입력안하면 처리해야함
 						continue;
 					}
-					if (chat) {
+					if (message.charAt(0) == '@'){
+						if(message.equals("@exit")){
+							System.exit(0);
+						}
+					}
+					else if (chat) {
 						out.writeUTF("[" + name + "]" + message);
 					}
 				}
@@ -81,7 +86,9 @@ public class Client {
 				try {
 					System.out.println(in.readUTF());
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					System.out.print("서버와 연결이 끊겼습니다.ㅃㅃ");
+					System.exit(0);
 				}
 			}
 		} // run

@@ -3,11 +3,13 @@ package chat;
 import java.net.*;
 import java.io.*;
 import java.util.*;
+
 import chat.Client;
 import game.Game;
 
 public class Server {
 	HashMap<String, DataOutputStream> clients;
+	HashMap<String, String> clients_job;
 	Game game;
 
 	public Server() {
@@ -71,10 +73,17 @@ public class Server {
 						continue;
 					}
 					if (message.charAt(0) == '@') { // @로 시작하는 명령어 입력시
-						if (message.equals("@set")) // set->세팅
-							game.Set(clients);
-						else if (message.equals("@start")) // start->시작
+						if (message.equals("@set")){ // set->세팅
+							clients_job = game.Set(clients);
+						}
+						else if (message.equals("@start")) { // start->시작
 							System.out.println("");// game.Startt;
+							System.out.println(new Random().nextFloat());
+						}
+						else if (message.equals("@status")){ // status->직업표시
+							System.out.println("사용자 직업 상태:");
+							game.Status();
+						}
 						else
 							System.out.println("명령어를 제대로 입력해주세요.");
 					}
@@ -120,7 +129,7 @@ public class Server {
 				}
 				// ------------- 끝 -------------//
 			} catch (IOException e) {
-				e.printStackTrace();
+				
 			} finally {
 				Out();
 			} // try
