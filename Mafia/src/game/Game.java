@@ -3,10 +3,13 @@ package game;
 import java.util.*;
 import java.io.*;
 
+
 public class Game {
 	HashMap<String, String> clients_job = new HashMap<String, String>();
 	Iterator<String> it;
 	int num, maf, pol, doc;
+	HashMap<String, DataOutputStream> clients;
+	public int Num;
 
 	public Game() {
 		System.out.println("Game »ı¼ºÀÚ");

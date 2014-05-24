@@ -1,9 +1,7 @@
-import java.net.Socket;
 import java.util.Scanner;
 
 import chat.Client;
 import chat.Server;
-import game.Game;
 
 public class Main {
 
