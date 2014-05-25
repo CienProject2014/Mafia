@@ -23,7 +23,7 @@ public class Game {
 				return null;
 			} else {
 				maf = num / 3;
-				it = clients.keySet().iterator();
+				//it = clients.keySet().iterator();
 				Random random = new Random();
 				int val;
 				// while (it.hasNext()) {
@@ -78,7 +78,7 @@ public class Game {
 			System.out.println("이름: " + temp);
 			System.out.println("직업: " + clients_job.get(temp));
 		}
-	}
+	}	
 
 	public void Start() {
 		new Main().Start();
