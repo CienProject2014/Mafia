@@ -23,7 +23,7 @@ public class Game {
 				return null;
 			} else {
 				maf = num / 3;
-				it = clients.keySet().iterator();
+				// it = clients.keySet().iterator();
 				Random random = new Random();
 				int val;
 				// while (it.hasNext()) {
@@ -55,7 +55,7 @@ public class Game {
 						}
 					}
 					System.out.println("총인원: " + num + "명");
-					System.out.println("마피아 수: " + num + "/3=" + num / 3);
+					System.out.println("마피아 수: " + num + "/3=" + maf);
 
 				} else {
 					System.out.println("인원이 너무 적습니다.(6명 이상)");
