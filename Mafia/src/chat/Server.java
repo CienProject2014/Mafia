@@ -49,17 +49,39 @@ public class Server {
 		Iterator<String> it = clients.keySet().iterator();
 
 		while (it.hasNext()) {
-			try { // 서버에서 클라이언트로 출력하는 부분!
-				DataOutputStream out = (DataOutputStream) clients.get(it.next());
-				if (out.equals(clients.get(id)))
-					continue; // 메세지 보낸 본인은 출력 안하게 continue
-				out.writeUTF(msg);
-			} catch (IOException e) {
-				e.printStackTrace();
+			String tmpid = it.next();
+			if(!clients_job.get(tmpid).equals("Ghost")){	// 유령의 말은 뿌리지 않음
+				try { // 서버에서 클라이언트로 출력하는 부분!
+					DataOutputStream out = (DataOutputStream) clients.get(tmpid);
+					if (out.equals(clients.get(id)))
+						continue; // 메세지 보낸 본인은 출력 안하게 continue
+					out.writeUTF(msg);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} // while
 	} // sendToAll
 
+	// msg를 id가 job을 가진 사람에게
+	void sendToJob(String msg, String id, String job){
+		Iterator<String> it = clients.keySet().iterator();
+
+		while (it.hasNext()) {
+			String tmpid = it.next();
+			if(clients_job.get(tmpid).equals(job)){	// job에게만
+				try { // 서버에서 클라이언트로 출력하는 부분!
+					DataOutputStream out = (DataOutputStream) clients.get(tmpid);
+					if (out.equals(clients.get(id)))
+						continue; // 메세지 보낸 본인은 출력 안하게 continue
+					out.writeUTF(msg);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} // while
+		}
+	}
+	
 	class ServerSender extends Thread {
 		boolean chat = true;
 
@@ -74,7 +96,7 @@ public class Server {
 					}
 					if (message.charAt(0) == '@') { // @로 시작하는 명령어 입력시
 						if (message.equals("@set")){ // set->세팅
-							clients_job = game.Set(clients);
+							game.Set(clients, clients_job);
 						}
 						else if (message.equals("@start")) { // start->시작
 							System.out.println("");// game.Startt;

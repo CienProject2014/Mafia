@@ -3,24 +3,23 @@ package game;
 import java.util.*;
 import java.io.*;
 
-
 public class Game {
-	HashMap<String, String> clients_job = new HashMap<String, String>();
+	HashMap<String, String> clients_job;
 	Iterator<String> it;
 	int num, maf, pol, doc;
 	HashMap<String, DataOutputStream> clients;
 	public int Num;
+	boolean day = true; // 낮 밤을 결정하는 상수
 
 	public Game() {
 		System.out.println("Game 생성자");
 	}
 
-	public HashMap<String, String> Set(HashMap<String, DataOutputStream> clients) {
+	public void Set(HashMap<String, DataOutputStream> clients, HashMap<String, String> clients_job) {
 		try {
 			num = clients.size();
 			if (clients.isEmpty()) {
 				System.out.println("클라이언트가 비어있습니다.");
-				return null;
 			} else {
 				maf = num / 3;
 				// it = clients.keySet().iterator();
@@ -61,11 +60,9 @@ public class Game {
 					System.out.println("인원이 너무 적습니다.(6명 이상)");
 				}
 				System.out.println("----------------------------");
-				return clients_job;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	}
 
@@ -78,20 +75,50 @@ public class Game {
 			System.out.println("이름: " + temp);
 			System.out.println("직업: " + clients_job.get(temp));
 		}
-	}	
+	}
 
 	public void Start() {
-		new Main().Start();
+		System.out.println("마피아를 시작합니다!");
+		new Main().start();
 	}
-
+	
+	public void End() {
+		System.out.println("게임이 끝났습니다.");
+	}
+	
 	public class Main extends Thread {
-		void Start() {
-			System.out.println("마피아를 시작합니다!");
-			start();
+		void Win(){
+			int maf_num=0, citi_num=0;
+			Iterator<String> it = clients_job.keySet().iterator();
+			while(it.hasNext()){
+				String tmpid = it.next();
+				switch(tmpid){
+				case "Mafia":
+					maf_num++;
+					break;
+				case "Citizen":
+					citi_num=0;
+					break;
+				}
+			}
+			if(maf_num>=citi_num)
+				System.out.println("마피아가 이겼습니다.");
+			else if(maf_num==0)
+				System.out.println("시민이 이겼습니다.");
 		}
-
+		
 		public void run() {
-
-		}
-	}
-}
+			while (day) {	// 낮
+				if (!day) {	// 밤
+					System.out.println("밤이 되었습니다.");
+					day = true;
+				} // 밤
+				
+				System.out.println("낮이 되었습니다.");
+				
+				
+				
+			} // 낮
+		} // run
+	} // Main
+} // Game
