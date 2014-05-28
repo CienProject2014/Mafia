@@ -28,7 +28,6 @@ public class Client {
 		Socket socket;
 		DataOutputStream out;
 		String name;
-		public boolean chat = true;
 
 		public ClientSender(Socket socket, String name) {
 			this.socket = socket;
@@ -58,7 +57,7 @@ public class Client {
 							System.exit(0);
 						}
 					}
-					else if (chat) {
+					else {
 						out.writeUTF("[" + name + "]" + message);
 					}
 				}

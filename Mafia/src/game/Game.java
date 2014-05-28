@@ -2,21 +2,32 @@ package game;
 
 import java.util.*;
 import java.io.*;
+import chat.Server;
 
 public class Game {
+	HashMap<String, DataOutputStream> clients;
+	HashMap<String, DataInputStream> clients_in;
 	HashMap<String, String> clients_job;
 	Iterator<String> it;
-	int num, maf, pol, doc;
-	HashMap<String, DataOutputStream> clients;
-	public int Num;
+	int num, maf, pol, doc;	// 총, 마피아, 경찰, 의사
+	public int Num;	
 	boolean day = true; // 낮 밤을 결정하는 상수
+	boolean chat = true; // 클라이언트 채팅 가능 여부
+	public Main main; // Game클래스의 내부클래스 Main에 접근.
+	public Server server; // Server클래스에 접근
 
 	public Game() {
 		System.out.println("Game 생성자");
 	}
 
-	public void Set(HashMap<String, DataOutputStream> clients, HashMap<String, String> clients_job) {
+	public void Set(Server server) {
 		try {
+			// 서버의 정보를 받아온다.
+			this.server = server;
+			this.clients = server.clients;
+			this.clients_in = server.clients_in;	// 필요성 검증 해야함.
+			this.clients_job = server.clients_job;
+			
 			num = clients.size();
 			if (clients.isEmpty()) {
 				System.out.println("클라이언트가 비어있습니다.");
@@ -78,16 +89,20 @@ public class Game {
 	}
 
 	public void Start() {
+		server.gameon = true;
 		System.out.println("마피아를 시작합니다!");
-		new Main().start();
+		main = new Main();
+		main.start();
 	}
 	
 	public void End() {
+		server.gameon = false;
 		System.out.println("게임이 끝났습니다.");
 	}
 	
 	public class Main extends Thread {
-		void Win(){
+		boolean Win(){
+			boolean win=true;	// true:시민이김, false:마피아이김
 			int maf_num=0, citi_num=0;
 			Iterator<String> it = clients_job.keySet().iterator();
 			while(it.hasNext()){
@@ -97,28 +112,50 @@ public class Game {
 					maf_num++;
 					break;
 				case "Citizen":
-					citi_num=0;
+					citi_num++;
 					break;
 				}
+				
 			}
-			if(maf_num>=citi_num)
+			if(maf_num>=citi_num){
 				System.out.println("마피아가 이겼습니다.");
-			else if(maf_num==0)
+				win = false;
+			}
+			else if(maf_num==0){
 				System.out.println("시민이 이겼습니다.");
+				win = true;
+			}
+			return win;
+		}
+		
+		public void TimeOut(int sec) {	// 시간제한을 준다. 시간이 지나면 대화 막음.
+			System.out.println(sec+"초 후 지목을 시작합니다.");
+			server.sender.chat = false;	// ServerSender클래스의 chat을 false로. sendToAll함수 작동막음.
+			
+		}
+		
+		public void PointOut() {	// 지목 
+			System.out.println("지목해주세요.");
+		}
+		
+		public void LiveOrDead(String id) {	// 투표
+			System.out.println("투표해주세요.");
 		}
 		
 		public void run() {
 			while (day) {	// 낮
+				if(Win()) break;	// 승부가 났는지 검사
+				System.out.println("낮이 되었습니다.");
+				TimeOut(180);
+
+				day = false;
 				if (!day) {	// 밤
 					System.out.println("밤이 되었습니다.");
+					
 					day = true;
 				} // 밤
-				
-				System.out.println("낮이 되었습니다.");
-				
-				
-				
-			} // 낮
+			} // 낮 while
+			End();
 		} // run
 	} // Main
 } // Game

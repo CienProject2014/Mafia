@@ -12,13 +12,15 @@ public class Main {
 			System.out.println("2. 서버참가");
 			Scanner sc = new Scanner(System.in);
 
-			Server server = new Server();
+			
 			// case 2에서 클라이언트에게 서버의 정보를 줄려고 이렇게 했음
+			// 줄 필요가 없어서 다시 수정.
 			
 			byte sel;
 			sel = sc.nextByte();
 			switch (sel) {
 			case 1:
+				Server server = new Server();
 				server.Start();
 				
 				break;
