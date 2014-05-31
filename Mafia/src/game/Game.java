@@ -27,7 +27,7 @@ public class Game {
 			this.clients = server.clients;
 			this.clients_in = server.clients_in;	// 필요성 검증 해야함.
 			this.clients_job = server.clients_job;
-			
+
 			num = clients.size();
 			if (clients.isEmpty()) {
 				System.out.println("클라이언트가 비어있습니다.");
@@ -42,7 +42,41 @@ public class Game {
 				// }
 
 				System.out.println("---------마피아 설정---------");
+				//김민수가 짜본 마피아 로직. keyset과 iterator의 이해력이 부족..
+				
 				if (num > 5) {
+
+					int mafia[] = new int[num];//배열 선언
+					Arrays.fill(mafia,0);//0으로 초기화
+
+					for(int i=0;i<maf;i++){
+						mafia[i]=1;//마피아 수만큼 1대입
+					}
+
+					for (int i = mafia.length - 1; i > 0; i--)
+				    {
+						
+				        int index = random.nextInt(i + 1);
+				        if (index != i)
+				        {
+				            mafia[index] ^= mafia[i];
+				            mafia[i] ^= mafia[index];
+				            mafia[index] ^= mafia[i];
+				        }
+				    }//배열 섞어서 1의 위치 랜.덤.
+
+					for(int i=0; i<mafia.length; i++){
+						it = clients.keySet().iterator();
+						if(mafia[i]==1)			//해당값이 1이면 마피아			
+							clients_job.put(it.next(), "Mafia");
+						else 					//아니면 즉 0이면 시민
+							clients_job.put(it.next(), "citizen");
+
+					}
+
+
+
+					/*
 					while (maf > 1) {
 						System.out.println("첫번째 while 진입"); // 테스트 출력
 						it = clients.keySet().iterator();
@@ -66,7 +100,7 @@ public class Game {
 					}
 					System.out.println("총인원: " + num + "명");
 					System.out.println("마피아 수: " + num + "/3=" + maf);
-
+					 */
 				} else {
 					System.out.println("인원이 너무 적습니다.(6명 이상)");
 				}
@@ -94,12 +128,12 @@ public class Game {
 		main = new Main();
 		main.start();
 	}
-	
+
 	public void End() {
 		server.gameon = false;
 		System.out.println("게임이 끝났습니다.");
 	}
-	
+
 	public class Main extends Thread {
 		boolean Win(){
 			boolean win=true;	// true:시민이김, false:마피아이김
@@ -115,7 +149,7 @@ public class Game {
 					citi_num++;
 					break;
 				}
-				
+
 			}
 			if(maf_num>=citi_num){
 				System.out.println("마피아가 이겼습니다.");
@@ -127,21 +161,21 @@ public class Game {
 			}
 			return win;
 		}
-		
+
 		public void TimeOut(int sec) {	// 시간제한을 준다. 시간이 지나면 대화 막음.
 			System.out.println(sec+"초 후 지목을 시작합니다.");
 			server.sender.chat = false;	// ServerSender클래스의 chat을 false로. sendToAll함수 작동막음.
-			
+
 		}
-		
+
 		public void PointOut() {	// 지목 
 			System.out.println("지목해주세요.");
 		}
-		
+
 		public void LiveOrDead(String id) {	// 투표
 			System.out.println("투표해주세요.");
 		}
-		
+
 		public void run() {
 			while (day) {	// 낮
 				if(Win()) break;	// 승부가 났는지 검사
@@ -151,7 +185,7 @@ public class Game {
 				day = false;
 				if (!day) {	// 밤
 					System.out.println("밤이 되었습니다.");
-					
+
 					day = true;
 				} // 밤
 			} // 낮 while
