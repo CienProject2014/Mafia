@@ -2,6 +2,7 @@ package game;
 
 import java.util.*;
 import java.io.*;
+
 import chat.Server;
 
 public class Game {
@@ -9,8 +10,8 @@ public class Game {
 	HashMap<String, DataInputStream> clients_in;
 	HashMap<String, String> clients_job;
 	Iterator<String> it;
-	int num, maf, pol, doc;	// 총, 마피아, 경찰, 의사
-	public int Num;	
+	int num, maf, pol, doc; // 총, 마피아, 경찰, 의사
+	public int Num;
 	boolean day = true; // 낮 밤을 결정하는 상수
 	boolean chat = true; // 클라이언트 채팅 가능 여부
 	public Main main; // Game클래스의 내부클래스 Main에 접근.
@@ -25,7 +26,7 @@ public class Game {
 			// 서버의 정보를 받아온다.
 			this.server = server;
 			this.clients = server.clients;
-			this.clients_in = server.clients_in;	// 필요성 검증 해야함.
+			this.clients_in = server.clients_in; // 필요성 검증 해야함.
 			this.clients_job = server.clients_job;
 
 			num = clients.size();
@@ -42,64 +43,42 @@ public class Game {
 				// }
 
 				System.out.println("---------마피아 설정---------");
-				//김민수가 짜본 마피아 로직. keyset과 iterator의 이해력이 부족..
-				
+				// 김민수가 짜본 마피아 로직. keyset과 iterator의 이해력이 부족..
+
 				if (num > 5) {
-
-					int mafia[] = new int[num];//배열 선언
-					Arrays.fill(mafia,0);//0으로 초기화
-
-					for(int i=0;i<maf;i++){
-						mafia[i]=1;//마피아 수만큼 1대입
+					String mafia[] = new String[num];// 배열 선언
+					Arrays.fill(mafia, 0);// 0으로 초기화
+					
+					for (int i = 0; i < maf; i++) {
+						mafia[i] = "1";// 마피아 수만큼 1대입
 					}
 
-					for (int i = mafia.length - 1; i > 0; i--)
-				    {
-						
-				        int index = random.nextInt(i + 1);
-				        if (index != i)
-				        {
-				            mafia[index] ^= mafia[i];
-				            mafia[i] ^= mafia[index];
-				            mafia[index] ^= mafia[i];
-				        }
-				    }//배열 섞어서 1의 위치 랜.덤.
+					List<String> mafiaList = Arrays.asList(mafia); // 배열을 리스트로
+					Collections.shuffle(mafiaList);// 리스트 셔플~
 
-					for(int i=0; i<mafia.length; i++){
+					for (int i = 0; i < mafiaList.size() - 1; i++) {
 						it = clients.keySet().iterator();
-						if(mafia[i]==1)			//해당값이 1이면 마피아			
+						if (mafiaList.get(i) == "1")// 해당값이 1이면 마피아
 							clients_job.put(it.next(), "Mafia");
-						else 					//아니면 즉 0이면 시민
+						else
+							// 아니면 즉 0이면 시민
 							clients_job.put(it.next(), "citizen");
 
 					}
 
-
-
 					/*
-					while (maf > 1) {
-						System.out.println("첫번째 while 진입"); // 테스트 출력
-						it = clients.keySet().iterator();
-						while (it.hasNext()) {
-							System.out.println("두번째 while 진입"); // 테스트 출력
-							val = random.nextInt(num);
-							System.out.println(val); // 테스트 출력
-							if (val == 1) {
-								if (maf < 1) {
-									System.out.println("마피아 꽉참"); // 테스트 출력
-									break;
-								}
-								maf--;
-								clients_job.put(it.next(), "Mafia");
-								System.out.println("마피아 한명 뽑힘"); // 테스트 출력
-							} else {
-								clients_job.put(it.next(), "Citizen");
-								System.out.println("그냥 시민으로"); // 테스트 출력
-							}
-						}
-					}
-					System.out.println("총인원: " + num + "명");
-					System.out.println("마피아 수: " + num + "/3=" + maf);
+					 * while (maf > 1) { System.out.println("첫번째 while 진입"); //
+					 * 테스트 출력 it = clients.keySet().iterator(); while
+					 * (it.hasNext()) { System.out.println("두번째 while 진입"); //
+					 * 테스트 출력 val = random.nextInt(num);
+					 * System.out.println(val); // 테스트 출력 if (val == 1) { if
+					 * (maf < 1) { System.out.println("마피아 꽉참"); // 테스트 출력
+					 * break; } maf--; clients_job.put(it.next(), "Mafia");
+					 * System.out.println("마피아 한명 뽑힘"); // 테스트 출력 } else {
+					 * clients_job.put(it.next(), "Citizen");
+					 * System.out.println("그냥 시민으로"); // 테스트 출력 } } }
+					 * System.out.println("총인원: " + num + "명");
+					 * System.out.println("마피아 수: " + num + "/3=" + maf);
 					 */
 				} else {
 					System.out.println("인원이 너무 적습니다.(6명 이상)");
@@ -135,13 +114,13 @@ public class Game {
 	}
 
 	public class Main extends Thread {
-		boolean Win(){
-			boolean win=true;	// true:시민이김, false:마피아이김
-			int maf_num=0, citi_num=0;
+		boolean Win() {
+			boolean win = true; // true:시민이김, false:마피아이김
+			int maf_num = 0, citi_num = 0;
 			Iterator<String> it = clients_job.keySet().iterator();
-			while(it.hasNext()){
+			while (it.hasNext()) {
 				String tmpid = it.next();
-				switch(tmpid){
+				switch (tmpid) {
 				case "Mafia":
 					maf_num++;
 					break;
@@ -151,39 +130,40 @@ public class Game {
 				}
 
 			}
-			if(maf_num>=citi_num){
+			if (maf_num >= citi_num) {
 				System.out.println("마피아가 이겼습니다.");
 				win = false;
-			}
-			else if(maf_num==0){
+			} else if (maf_num == 0) {
 				System.out.println("시민이 이겼습니다.");
 				win = true;
 			}
 			return win;
 		}
 
-		public void TimeOut(int sec) {	// 시간제한을 준다. 시간이 지나면 대화 막음.
-			System.out.println(sec+"초 후 지목을 시작합니다.");
-			server.sender.chat = false;	// ServerSender클래스의 chat을 false로. sendToAll함수 작동막음.
+		public void TimeOut(int sec) { // 시간제한을 준다. 시간이 지나면 대화 막음.
+			System.out.println(sec + "초 후 지목을 시작합니다.");
+			server.sender.chat = false; // ServerSender클래스의 chat을 false로.
+										// sendToAll함수 작동막음.
 
 		}
 
-		public void PointOut() {	// 지목 
+		public void PointOut() { // 지목
 			System.out.println("지목해주세요.");
 		}
 
-		public void LiveOrDead(String id) {	// 투표
+		public void LiveOrDead(String id) { // 투표
 			System.out.println("투표해주세요.");
 		}
 
 		public void run() {
-			while (day) {	// 낮
-				if(Win()) break;	// 승부가 났는지 검사
+			while (day) { // 낮
+				if (Win())
+					break; // 승부가 났는지 검사
 				System.out.println("낮이 되었습니다.");
 				TimeOut(180);
 
 				day = false;
-				if (!day) {	// 밤
+				if (!day) { // 밤
 					System.out.println("밤이 되었습니다.");
 
 					day = true;
