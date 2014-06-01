@@ -2,6 +2,7 @@ package game;
 
 import java.util.*;
 import java.io.*;
+
 import chat.Server;
 
 public class Game {
@@ -34,8 +35,6 @@ public class Game {
 			} else {
 				maf = num / 3;
 				// it = clients.keySet().iterator();
-				Random random = new Random();
-				int val;
 				// while (it.hasNext()) {
 				// clients_job.put(it.next(), "Citizen");
 				// System.out.println("모두 시민으로"); // 테스트 출력
@@ -46,30 +45,23 @@ public class Game {
 
 				if (num > 5) {
 
-					int mafia[] = new int[num];// 배열 선언
+					String mafia[] = new String[num];// 배열 선언
 					Arrays.fill(mafia, 0);// 0으로 초기화
-
+					
 					for (int i = 0; i < maf; i++) {
-						mafia[i] = 1;// 마피아 수만큼 1대입
+						mafia[i] = "1";// 마피아 수만큼 1대입
 					}
 
-					for (int i = mafia.length - 1; i > 0; i--) {
-						int index = random.nextInt(i + 1);
-						if (index != i) {
-							mafia[index] ^= mafia[i];
-							mafia[i] ^= mafia[index];
-							mafia[index] ^= mafia[i];
-						}
-					}// 배열 섞어서 1의 위치 랜.덤.
+					List<String> mafiaList = Arrays.asList(mafia); // 배열을 리스트로
+					Collections.shuffle(mafiaList);// 리스트 셔플~
 
-					for (int i = 0; i < mafia.length; i++) {
+					for (int i = 0; i < mafiaList.size() - 1; i++) {
 						it = clients.keySet().iterator();
-						if (mafia[i] == 1) // 해당값이 1이면 마피아
+						if (mafiaList.get(i) == "1")// 해당값이 1이면 마피아
 							clients_job.put(it.next(), "Mafia");
 						else
 							// 아니면 즉 0이면 시민
 							clients_job.put(it.next(), "citizen");
-
 					}
 
 					/*
